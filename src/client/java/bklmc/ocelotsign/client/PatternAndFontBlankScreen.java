@@ -42,6 +42,16 @@ public class PatternAndFontBlankScreen extends Screen {
 
     /**
      * 打开图案与字体选择界面，并记录当前界面作为关闭后要返回的界面。
+     *
+     * <p><b>注意：这里刻意不使用 {@link MinecraftClient#setScreen}。</b>
+     * {@code setScreen} 会先对原界面调用 {@link Screen#removed()}，而 mishanguc
+     * 告示牌编辑界面的 {@code removed()} 会向服务器发送 {@code edit_sign_finish}
+     * 数据包 —— 这会立即结束本次编辑会话并清空服务端记录的编辑者。
+     * 之后真正关闭编辑界面时，服务器会因"编辑者不匹配"而丢弃全部修改，
+     * 表现为：插入的图案/字体全都"不生效"，告示牌还是原样，且该行无法继续编辑。
+     *
+     * <p>因此这里直接替换 {@code currentScreen} 字段：原编辑界面的控件、焦点与
+     * 编辑会话原封不动，关闭编辑界面时 mishanguc 会一次性提交全部文本。
      */
     public static void openOverlay() {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -51,7 +61,11 @@ public class PatternAndFontBlankScreen extends Screen {
         PatternAndFontOverlay.isVisible = true;
         // 强制互斥：避免上一次会话残留的任意顶层项标志导致多个侧边栏项同时高亮
         PatternAndFontOverlay.selectSidebarTop(PatternAndFontOverlay.SIDEBAR_TOP_DOCS);
-        client.setScreen(new PatternAndFontBlankScreen(current));
+        PatternAndFontBlankScreen overlay = new PatternAndFontBlankScreen(current);
+        client.currentScreen = overlay;
+        // 仅初始化浮层自身的字段（width/height/textRenderer 等），
+        // 不会对编辑界面触发任何生命周期回调。
+        overlay.init(client, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight());
     }
 
     /**
@@ -96,6 +110,10 @@ public class PatternAndFontBlankScreen extends Screen {
 
     /**
      * 关闭浮层并返回打开它之前的告示牌编辑界面。
+     *
+     * <p>与 {@link #openOverlay()} 对应，同样直接替换 {@code currentScreen}，
+     * 不调用 {@code setScreen}，避免对编辑界面触发多余的 {@code init()} 重载
+     * （编辑界面的控件、焦点、滚动位置与编辑会话需要原样保留）。
      */
     public void returnToEditor() {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -103,7 +121,7 @@ public class PatternAndFontBlankScreen extends Screen {
         editorScreen = null;
         PatternAndFontOverlay.isVisible = false;
         if (client.currentScreen == this) {
-            client.setScreen(target);
+            client.currentScreen = target;
         }
     }
 
