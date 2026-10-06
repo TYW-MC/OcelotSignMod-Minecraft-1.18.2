@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "AbstractSignBlockEditScreenAccessor",
-    "AbstractSignBlockEditScreenMixin"
+    "AbstractSignBlockEditScreenMixin",
+    "TextContextMixin"
   ],
   "injectors": {
     "defaultRequire": 1
