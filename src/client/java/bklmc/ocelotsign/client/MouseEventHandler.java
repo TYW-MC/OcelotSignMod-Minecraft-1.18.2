@@ -324,11 +324,18 @@ public final class MouseEventHandler {
                     int fontStartX = UIConstants.SIDEBAR_WIDTH + 30;
                     int insertBtnX = fontStartX + fontItemWidth - UIConstants.INSERT_BUTTON_WIDTH - 10;
 
+                    // 字体文字输入框行：点击聚焦输入框
+                    if (LayoutHelper.isMouseInRect(mouseX, mouseY, fontStartX, currentContentY, fontItemWidth, PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT - 2)) {
+                        PatternAndFontOverlay.focusFontTextInput();
+                        return true;
+                    }
+                    currentContentY += PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT;
+
                     for (int i = 0; i < effectiveSection.fontItems.size(); i++) {
                         int fy = currentContentY + i * UIConstants.FONT_ITEM_HEIGHT;
                         if (LayoutHelper.isMouseInRect(mouseX, mouseY, insertBtnX, fy + 2, UIConstants.INSERT_BUTTON_WIDTH, 16)) {
                             PatternAndFontOverlay.FontItem fontItem = effectiveSection.fontItems.get(i);
-                            insertTextToScreen(String.format(effectiveSection.fontInsertTemplate, fontItem.fontId));
+                            insertTextToScreen(buildFontInsertText(effectiveSection, fontItem));
                             return true;
                         }
                     }
@@ -347,11 +354,18 @@ public final class MouseEventHandler {
                     int fontStartX = UIConstants.SIDEBAR_WIDTH + 30;
                     int insertBtnX = fontStartX + fontItemWidth - UIConstants.INSERT_BUTTON_WIDTH - 10;
 
+                    // 字体文字输入框行：点击聚焦输入框
+                    if (LayoutHelper.isMouseInRect(mouseX, mouseY, fontStartX, currentContentY, fontItemWidth, PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT - 2)) {
+                        PatternAndFontOverlay.focusFontTextInput();
+                        return true;
+                    }
+                    currentContentY += PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT;
+
                     for (int i = 0; i < effectiveSection.fontItems.size(); i++) {
                         int fy = currentContentY + i * UIConstants.FONT_ITEM_HEIGHT;
                         if (LayoutHelper.isMouseInRect(mouseX, mouseY, insertBtnX, fy + 2, UIConstants.INSERT_BUTTON_WIDTH, 16)) {
                             PatternAndFontOverlay.FontItem fontItem = effectiveSection.fontItems.get(i);
-                            insertTextToScreen(String.format(effectiveSection.fontInsertTemplate, fontItem.fontId));
+                            insertTextToScreen(buildFontInsertText(effectiveSection, fontItem));
                             return true;
                         }
                     }
@@ -414,11 +428,18 @@ public final class MouseEventHandler {
                 int fontStartX = UIConstants.SIDEBAR_WIDTH + 30;
                 int insertBtnX = fontStartX + fontItemWidth - UIConstants.INSERT_BUTTON_WIDTH - 10;
 
+                // 字体文字输入框行：点击聚焦输入框
+                if (LayoutHelper.isMouseInRect(mouseX, mouseY, fontStartX, currentContentY, fontItemWidth, PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT - 2)) {
+                    PatternAndFontOverlay.focusFontTextInput();
+                    return true;
+                }
+                currentContentY += PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT;
+
                 for (int i = 0; i < effectiveSection.fontItems.size(); i++) {
                     int fy = currentContentY + i * UIConstants.FONT_ITEM_HEIGHT;
                     if (LayoutHelper.isMouseInRect(mouseX, mouseY, insertBtnX, fy + 2, UIConstants.INSERT_BUTTON_WIDTH, 16)) {
                         PatternAndFontOverlay.FontItem fontItem = effectiveSection.fontItems.get(i);
-                        insertTextToScreen(String.format(effectiveSection.fontInsertTemplate, fontItem.fontId));
+                        insertTextToScreen(buildFontInsertText(effectiveSection, fontItem));
                         return true;
                     }
                 }
@@ -496,6 +517,22 @@ public final class MouseEventHandler {
         PatternAndFontOverlay.isDraggingSv = false;
         PatternAndFontOverlay.isDraggingHue = false;
         return true;
+    }
+
+    /**
+     * 根据字体插入模板与输入框中的文字，构建要插入的命令行。
+     *
+     * <p>模板形如 {@code -json {"font":"%s","text":"XXX"}}：先填入字体 ID，
+     * 再把占位文字 "XXX" 替换为输入框内容（做 JSON 转义）。输入为空时保留 "XXX"。
+     */
+    private static String buildFontInsertText(PatternAndFontOverlay.H4Section section, PatternAndFontOverlay.FontItem item) {
+        String row = String.format(section.fontInsertTemplate, item.fontId);
+        String userText = PatternAndFontOverlay.getFontInsertText();
+        if (!"XXX".equals(userText)) {
+            String escaped = userText.replace("\\", "\\\\").replace("\"", "\\\"");
+            row = row.replace("\"XXX\"", "\"" + escaped + "\"");
+        }
+        return row;
     }
 
     /**

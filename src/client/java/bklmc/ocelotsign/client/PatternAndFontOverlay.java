@@ -293,6 +293,57 @@ public final class PatternAndFontOverlay {
     /** Mishang 图案列表。 */
     public static final List<MishangPatternItem> MISHANG_PATTERNS = new ArrayList<>();
 
+    // ==================== 字体文字输入框 ====================
+
+    /**
+     * 字体区的"告示牌文字"输入框（懒加载，整个浮层共享一个）。
+     *
+     * <p>插入字体行时以其中的内容作为 {@code -json {"font":...,"text":...}} 的 text，
+     * 避免用户再去手动编辑告示牌编辑界面里的原始 JSON 行——
+     * 在部分环境下（Forge + Connector + 旧版 mishanguc）编辑界面里插入的行无法获得键盘焦点。
+     */
+    private static net.minecraft.client.gui.widget.TextFieldWidget fontTextInput = null;
+
+    /** 字体区输入框行占用的高度（含上下间距），渲染与点击判定共用。 */
+    public static final int FONT_INPUT_ROW_HEIGHT = 24;
+
+    /** 获取字体文字输入框（懒加载创建）。 */
+    public static net.minecraft.client.gui.widget.TextFieldWidget getFontTextInput() {
+        if (fontTextInput == null) {
+            fontTextInput = new net.minecraft.client.gui.widget.TextFieldWidget(
+                    MinecraftClient.getInstance().textRenderer, 0, 0, 100, 14, new LiteralText(""));
+            fontTextInput.setMaxLength(128);
+            fontTextInput.setDrawsBackground(false);
+            fontTextInput.setSuggestion(new TranslatableText("ocelotsignmod.gui.font_text_input.suggestion").getString());
+        }
+        return fontTextInput;
+    }
+
+    /** 输入框当前是否持有焦点（且浮层可见）。 */
+    public static boolean isFontTextInputFocused() {
+        return isVisible && fontTextInput != null && fontTextInput.isFocused();
+    }
+
+    /** 让输入框获得焦点（点击输入框区域时调用）。 */
+    public static void focusFontTextInput() {
+        getFontTextInput().setTextFieldFocused(true);
+    }
+
+    /** 每 tick 推进输入框（光标闪烁动画）。 */
+    public static void tickFontTextInput() {
+        if (fontTextInput != null) {
+            fontTextInput.tick();
+        }
+    }
+
+    /**
+     * 获取插入字体行时应使用的文字。输入为空时回退到占位符 "XXX"。
+     */
+    public static String getFontInsertText() {
+        String s = fontTextInput != null ? fontTextInput.getText() : "";
+        return s.isEmpty() ? "XXX" : s;
+    }
+
     /** 注册中心数据是否已加载。 */
     public static boolean isDataLoaded = false;
 

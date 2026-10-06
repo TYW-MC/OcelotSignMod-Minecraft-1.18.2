@@ -155,6 +155,16 @@ public final class GridRenderer {
      * @param startY 起始 Y 坐标
      * @return 列表总高度（像素）
      */
+    /** 字体区输入框行的标签。 */
+    private static final Text FONT_INPUT_LABEL = new TranslatableText("ocelotsignmod.gui.font_text_input.label");
+
+    /**
+     * 获取输入框行的标签宽度（渲染与点击判定共用，保证二者对齐）。
+     */
+    public static int getFontInputLabelWidth(TextRenderer textRenderer) {
+        return textRenderer.getWidth(FONT_INPUT_LABEL) + 12;
+    }
+
     public static int renderFontList(MatrixStack context, TextRenderer textRenderer,
                                      double mouseX, double mouseY,
                                      int mainWidth, int scrollWindowStartY, int scrollWindowEndY,
@@ -170,9 +180,32 @@ public final class GridRenderer {
         int fontItemWidth = mainWidth - UIConstants.FONT_ITEM_WIDTH_OFFSET;
         int fontStartX = UIConstants.SIDEBAR_WIDTH + 30;
 
+        // ---- 字体文字输入框行（插入字体时以其中的内容作为告示牌文字） ----
+        net.minecraft.client.gui.widget.TextFieldWidget input = PatternAndFontOverlay.getFontTextInput();
+        int inputBoxHeight = 14;
+        int labelWidth = getFontInputLabelWidth(textRenderer);
+        boolean inputHover = LayoutHelper.isMouseInRect(mouseX, mouseY, fontStartX, startY, fontItemWidth, PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT - 2);
+        boolean inputFocused = PatternAndFontOverlay.isFontTextInputFocused();
+
+        // 每帧同步几何，保证点击判定与渲染一致
+        input.x = fontStartX + labelWidth;
+        input.y = startY + (PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT - 2 - inputBoxHeight) / 2 + 1;
+        input.setWidth(fontItemWidth - labelWidth - 4);
+
+        int boxTop = input.y - 2;
+        int boxBottom = input.y + inputBoxHeight + 2;
+        GuiUtil.fill(context, fontStartX, boxTop, fontStartX + fontItemWidth, boxBottom,
+                inputFocused ? 0xFFFFFFFF : 0xFFF0F0F0);
+        GuiUtil.drawBorder(context, fontStartX, boxTop, fontItemWidth, boxBottom - boxTop,
+                inputFocused ? 0xFF00AAFF : (inputHover ? 0xFFAAAAAA : 0xFFD0D0D0));
+        GuiUtil.drawText(context, textRenderer, FONT_INPUT_LABEL.getString(), fontStartX + 6, startY + 5, UIConstants.COLOR_BTN_TEXT, false);
+        input.render(context, (int) mouseX, (int) mouseY, 0.0f);
+
+        // ---- 字体条目（从输入框行下方开始） ----
+        int itemsStartY = startY + PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT;
         for (int i = 0; i < fontItems.size(); i++) {
             PatternAndFontOverlay.FontItem fontItem = fontItems.get(i);
-            int y = startY + i * UIConstants.FONT_ITEM_HEIGHT;
+            int y = itemsStartY + i * UIConstants.FONT_ITEM_HEIGHT;
 
             if (y + UIConstants.FONT_ITEM_HEIGHT < scrollWindowStartY || y > scrollWindowEndY) continue;
 
@@ -198,7 +231,7 @@ public final class GridRenderer {
             GuiUtil.drawText(context, textRenderer, insertText, insertBtnX + (UIConstants.INSERT_BUTTON_WIDTH - itw) / 2, y + 5,
                 UIConstants.COLOR_BTN_TEXT, false);
         }
-        return fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
+        return PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT + fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
     }
 
     /**

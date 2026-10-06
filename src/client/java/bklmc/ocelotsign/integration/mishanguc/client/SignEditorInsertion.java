@@ -71,12 +71,18 @@ public final class SignEditorInsertion {
             int index
     ) {
         TextFieldListWidget.Entry newEntry = textFieldListWidget.children().get(index);
-        // 1.18.2 中 setFocused 为 protected，使用 mishanguc 提供的 setFocusedAndSelected。
-        textFieldListWidget.setFocusedAndSelected(newEntry, false, false);
         textFieldListWidget.setScrollAmount(textFieldListWidget.getScrollAmount());
         if (!textFieldListWidget.children().isEmpty()) {
+            // 先让编辑界面把焦点交给列表，再由列表把焦点交给新行，
+            // 顺序反过来会被随后设置的父级焦点覆盖。
             screen.setFocused(textFieldListWidget);
         }
+        // 1.18.2 中 setFocused 为 protected，使用 mishanguc 提供的 setFocusedAndSelected。
+        textFieldListWidget.setFocusedAndSelected(newEntry, false, false);
+        // 双保险：在部分加载器组合（Forge + Connector）下 setSelected 的焦点同步可能未生效，
+        // 这里直接把输入框标记为聚焦并把光标放到末尾，保证插入的这行可以立刻继续输入。
+        newEntry.textFieldWidget.setTextFieldFocused(true);
+        newEntry.textFieldWidget.setCursor(newEntry.textFieldWidget.getText().length());
     }
 
     /**

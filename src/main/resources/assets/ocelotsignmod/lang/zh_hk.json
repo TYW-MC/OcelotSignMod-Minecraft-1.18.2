@@ -685,6 +685,8 @@
   "ocelotsignmod.gui.unnamed": "未命名",
   "ocelotsignmod.gui.unnamed_font": "未命名字體",
   "ocelotsignmod.gui.no_fonts": "冇可用嘅字體",
+  "ocelotsignmod.gui.font_text_input.label": "文字",
+  "ocelotsignmod.gui.font_text_input.suggestion": "喺呢度輸入要顯示喺路牌上面嘅文字",
   "ocelotsignmod.gui.no_images": "呢個目錄下冇圖片",
   "ocelotsignmod.gui.color_picker.intro1": "喺左邊大色板上揀飽和度同明度，拖動右邊色相條就可以調配任意顏色。",
   "ocelotsignmod.gui.color_picker.intro2": "揀好之後點擊「用呢隻顏色」就可以將十六進制值複製到剪貼板，返去告示牌編輯器貼上。",

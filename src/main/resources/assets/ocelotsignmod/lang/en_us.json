@@ -683,6 +683,8 @@
   "ocelotsignmod.gui.unnamed": "Unnamed",
   "ocelotsignmod.gui.unnamed_font": "Unnamed Font",
   "ocelotsignmod.gui.no_fonts": "No fonts available",
+  "ocelotsignmod.gui.font_text_input.label": "Text",
+  "ocelotsignmod.gui.font_text_input.suggestion": "Type the text to display on the sign",
   "ocelotsignmod.gui.no_images": "No images in this directory",
   "ocelotsignmod.gui.color_picker.intro1": "Drag the large color field on the left to pick saturation & value, and the hue bar on the right to pick a hue.",
   "ocelotsignmod.gui.color_picker.intro2": "Click \"Use this color\" to copy the hex value to the clipboard, then paste it into the sign editor.",

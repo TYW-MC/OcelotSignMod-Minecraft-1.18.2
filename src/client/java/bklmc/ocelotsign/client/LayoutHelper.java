@@ -581,7 +581,7 @@ public final class LayoutHelper {
                 height += 12;                                // 标题
                 // 字体列表
                 if (!effectiveSection.fontItems.isEmpty()) {
-                    height += effectiveSection.fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
+                    height += PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT + effectiveSection.fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
                 } else {
                     height += 30;
                 }
@@ -590,7 +590,7 @@ public final class LayoutHelper {
                 height += 12;                                // 标题
                 // 字体列表
                 if (!effectiveSection.fontItems.isEmpty()) {
-                    height += effectiveSection.fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
+                    height += PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT + effectiveSection.fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
                 } else {
                     height += 30;
                 }
@@ -615,7 +615,7 @@ public final class LayoutHelper {
             if (effectiveSection.isFontMode && !isDefaultFonts && !isCustomFonts) {
                 // 字体列表（非 default_fonts）
                 if (!effectiveSection.fontItems.isEmpty()) {
-                    height += effectiveSection.fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
+                    height += PatternAndFontOverlay.FONT_INPUT_ROW_HEIGHT + effectiveSection.fontItems.size() * UIConstants.FONT_ITEM_HEIGHT;
                 } else {
                     height += 30;
                 }

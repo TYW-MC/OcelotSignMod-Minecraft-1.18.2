@@ -150,6 +150,14 @@ public class PatternAndFontBlankScreen extends Screen {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        if (PatternAndFontOverlay.isVisible) {
+            PatternAndFontOverlay.tickFontTextInput();
+        }
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!PatternAndFontOverlay.isVisible) {
             return super.mouseClicked(mouseX, mouseY, button);
@@ -197,6 +205,21 @@ public class PatternAndFontBlankScreen extends Screen {
             returnToEditor();
             return true;
         }
+        if (PatternAndFontOverlay.isVisible) {
+            // 字体文字输入框持有焦点时，把按键交给它处理（退格、方向键、Ctrl 组合等）
+            if (PatternAndFontOverlay.isFontTextInputFocused()) {
+                return PatternAndFontOverlay.getFontTextInput().keyPressed(keyCode, scanCode, modifiers);
+            }
+            return true;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char chr, int modifiers) {
+        if (PatternAndFontOverlay.isVisible && PatternAndFontOverlay.isFontTextInputFocused()) {
+            return PatternAndFontOverlay.getFontTextInput().charTyped(chr, modifiers);
+        }
+        return super.charTyped(chr, modifiers);
     }
 }

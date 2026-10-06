@@ -686,6 +686,8 @@
   "ocelotsignmod.gui.unnamed": "未命名",
   "ocelotsignmod.gui.unnamed_font": "未命名字体",
   "ocelotsignmod.gui.no_fonts": "没有可用的字体",
+  "ocelotsignmod.gui.font_text_input.label": "文字",
+  "ocelotsignmod.gui.font_text_input.suggestion": "在此输入要显示在告示牌上的文字",
   "ocelotsignmod.gui.no_images": "该目录下没有图片",
   "ocelotsignmod.gui.color_picker.intro1": "在左侧大色板上选择饱和度与明度，拖动右侧色相条即可调配任意颜色。",
   "ocelotsignmod.gui.color_picker.intro2": "选定后点击「使用此颜色」即可把十六进制值复制到剪贴板，返回告示牌编辑器粘贴。",
