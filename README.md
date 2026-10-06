@@ -6,4 +6,6 @@ I really respect the open-source spirit, and since [OcelotSignMod-Minecraft](htt
 
 Based on [OcelotSignMod-Minecraft](https://github.com/Creeper-Cola123/ocelotsignmod-minecraft) by Original Author, licensed under LGPL-3.0 license.
 
+This mod depends on[Mishang-Urban-Construction-1.18.2-1.6.5](https://github.com/TYW-MC/Mishang-Urban-Construction-1.18.2-1.6.5)
+
 Please don't send issues to Creeper-Cola123,thank you
