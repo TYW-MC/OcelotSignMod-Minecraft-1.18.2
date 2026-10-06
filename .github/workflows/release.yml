@@ -31,8 +31,19 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # gradle.properties points at mainland mirrors, which are only useful for
+      # local development. A GitHub runner reaches the official hosts directly,
+      # so use those here instead of routing through a third-party proxy.
+      - name: Use official sources on CI
+        run: |
+          sed -i 's|https://mirrors.cloud.tencent.com/gradle/|https://services.gradle.org/distributions/|' gradle/wrapper/gradle-wrapper.properties
+          grep distributionUrl gradle/wrapper/gradle-wrapper.properties
+
       - name: Build
-        run: ./gradlew build --no-daemon --stacktrace
+        run: >
+          ./gradlew build --no-daemon --stacktrace
+          -Ploom_fabric_repository=https://maven.fabricmc.net/
+          -Ploom_version_manifests=https://piston-meta.mojang.com/mc/game/version_manifest_v2.json
 
       - name: Collect release jars
         run: |
