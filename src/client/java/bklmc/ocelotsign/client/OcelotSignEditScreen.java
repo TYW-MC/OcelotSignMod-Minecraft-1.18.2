@@ -36,9 +36,7 @@ public class OcelotSignEditScreen<T extends BlockEntityWithText> extends Abstrac
      * 打开图样和字体列表悬浮层。
      */
     private void openPatternAndFontList() {
-        PatternAndFontOverlay.isVisible = true;
-        // 强制互斥：避免上一次会话残留的任意顶层项标志导致多个侧边栏项同时高亮
-        PatternAndFontOverlay.selectSidebarTop(PatternAndFontOverlay.SIDEBAR_TOP_DOCS);
+        PatternAndFontBlankScreen.openOverlay();
     }
 
     @Override

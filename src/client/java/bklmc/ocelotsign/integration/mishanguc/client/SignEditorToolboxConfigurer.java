@@ -1,6 +1,6 @@
 package bklmc.ocelotsign.integration.mishanguc.client;
 
-import bklmc.ocelotsign.client.PatternAndFontOverlay;
+import bklmc.ocelotsign.client.PatternAndFontBlankScreen;
 import bklmc.ocelotsign.mixin.client.AbstractSignBlockEditScreenAccessor;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -21,11 +21,7 @@ public final class SignEditorToolboxConfigurer {
         // 1.18.2 没有 ButtonWidget.builder，也没有通用 setTooltip，故去掉 tooltip。
         return new ButtonWidget(0, 0, 75, 20,
                 TextBridge.translatable("message.mishanguc.view_pattern_and_font_list"),
-                button -> {
-                    PatternAndFontOverlay.isVisible = true;
-                    // 强制互斥：避免与上一次选中的颜色拾取器/调色板叠加高亮
-                    PatternAndFontOverlay.selectSidebarTop(PatternAndFontOverlay.SIDEBAR_TOP_DOCS);
-                });
+                button -> PatternAndFontBlankScreen.openOverlay());
     }
 
     /**

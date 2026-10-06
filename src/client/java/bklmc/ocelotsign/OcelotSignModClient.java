@@ -6,7 +6,6 @@ import bklmc.ocelotsign.block.ArrowBlocksStyle2;
 import bklmc.ocelotsign.block.ArrowBlocksStyle3;
 import bklmc.ocelotsign.block.custom.CustomModelBlock;
 import bklmc.ocelotsign.blockentity.ModBlockEntities;
-import bklmc.ocelotsign.client.PatternAndFontBlankScreen;
 import bklmc.ocelotsign.client.PatternAndFontOverlay;
 import bklmc.ocelotsign.client.PatternRegistry;
 import bklmc.ocelotsign.client.gui.ModelSelectionScreen;
@@ -21,9 +20,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.BlockState;
@@ -32,7 +28,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * OcelotSignMod 客户端入口类
@@ -60,72 +55,6 @@ public class OcelotSignModClient implements ClientModInitializer {
         registerCustomModelItemUseHandler();
         registerCustomModelBlockUseHandler();
         registerBlockLayers();
-        registerOverlayScreenEvents();
-    }
-
-    /**
-     * 注册图案与字体浮层的屏幕事件监听。
-     *
-     * <p>拦截屏幕的渲染、鼠标点击/释放/滚动、键盘按键事件，
-     * 当浮层可见时优先处理浮层交互。
-     */
-    private void registerOverlayScreenEvents() {
-        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
-                if (PatternAndFontOverlay.isVisible) {
-                    screen1.setFocused(null);
-                    PatternAndFontOverlay.render(context, mouseX, mouseY);
-                }
-            });
-
-            ScreenMouseEvents.allowMouseClick(screen).register((screen1, mouseX, mouseY, button) -> {
-                if (PatternAndFontOverlay.isVisible) {
-                    if (PatternAndFontOverlay.mouseClicked(mouseX, mouseY, button)) {
-                        screen1.setDragging(true);
-                    }
-
-                    if (!PatternAndFontOverlay.isVisible && screen1 instanceof PatternAndFontBlankScreen) {
-                        screen1.close();
-                    }
-                    return false;
-                }
-                return true;
-            });
-
-            ScreenMouseEvents.allowMouseRelease(screen).register((screen1, mouseX, mouseY, button) -> {
-                if (PatternAndFontOverlay.isVisible) {
-                    PatternAndFontOverlay.mouseReleased(mouseX, mouseY, button);
-                    screen1.setDragging(false);
-                    return false;
-                }
-                return true;
-            });
-
-            ScreenMouseEvents.allowMouseScroll(screen).register((screen1, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
-                if (PatternAndFontOverlay.isVisible) {
-                    PatternAndFontOverlay.mouseScrolled(mouseX, mouseY, verticalAmount);
-                    return false;
-                }
-                return true;
-            });
-
-            ScreenKeyboardEvents.allowKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
-                if (PatternAndFontOverlay.isVisible) {
-                    if (key == GLFW.GLFW_KEY_ESCAPE) {
-                        PatternAndFontOverlay.isVisible = false;
-                        if (screen1 instanceof PatternAndFontBlankScreen) {
-                            screen1.close();
-                        }
-                    }
-                    return false;
-                }
-                return true;
-            });
-
-            ScreenKeyboardEvents.allowKeyRelease(screen).register((screen1, key, scancode, modifiers) -> {
-                return !PatternAndFontOverlay.isVisible;
-            });
-        });
     }
 
     /**

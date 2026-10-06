@@ -499,24 +499,16 @@ public final class MouseEventHandler {
     }
 
     /**
-     * 向当前告示牌编辑界面插入纹理。
+     * 向告示牌编辑界面插入纹理。
      */
     private static void insertTextureToScreen(Identifier identifier) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension extension) {
-            extension.ocelotsign$insertTexture(identifier);
-            PatternAndFontOverlay.isVisible = false;
-        }
+        PatternAndFontBlankScreen.insertTextureToEditor(identifier);
     }
 
     /**
-     * 向当前告示牌编辑界面插入文本。
+     * 向告示牌编辑界面插入文本。
      */
     private static void insertTextToScreen(String text) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension extension) {
-            extension.ocelotsign$insertText(text);
-            PatternAndFontOverlay.isVisible = false;
-        }
+        PatternAndFontBlankScreen.insertTextToEditor(text);
     }
 }

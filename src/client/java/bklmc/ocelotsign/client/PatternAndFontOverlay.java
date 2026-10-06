@@ -1,6 +1,5 @@
 package bklmc.ocelotsign.client;
 
-import bklmc.ocelotsign.mixin_interfaces.ISignEditorExtension;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -966,26 +965,6 @@ public final class PatternAndFontOverlay {
      */
     public static boolean handleMishangClick(int mouseX, int mouseY, int width, int height, int scrollY, int sidebarWidth) {
         return MishangIntegration.handleClick(mouseX, mouseY, width, height, sidebarWidth);
-    }
-
-    // ==================== 插入辅助 ====================
-
-    // 插入纹理到告示牌
-    private static void insertTextureToScreen(Identifier identifier) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof ISignEditorExtension extension) {
-            extension.ocelotsign$insertTexture(identifier);
-            isVisible = false;
-        }
-    }
-
-    // 插入文本到告示牌
-    private static void insertTextToScreen(String text) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof ISignEditorExtension extension) {
-            extension.ocelotsign$insertText(text);
-            isVisible = false;
-        }
     }
 
     // ==================== 事件代理 ====================
