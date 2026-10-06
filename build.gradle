@@ -1,0 +1,98 @@
+plugins {
+    id 'fabric-loom' version '0.12.56'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    mavenLocal()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+    mixin {
+        defaultRefmapName = "${archives_base_name}-refmap.json"
+    }
+
+    mods {
+        "ocelotsignmod" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    // 前置：mishanguc 1.18.2（dev jar 为 named 映射，供开发编译使用）
+    modImplementation files('libs/mishanguc-1.6.5+mc1.18.2-dev.jar')
+}
+
+processResources {
+    inputs.property "version", project.mod_version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": inputs.properties.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 17
+    // Show all compiler errors instead of stopping at the default 100.
+    it.options.compilerArgs += ['-Xmaxerrs', '2000']
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    from sourceSets.main.output
+    from sourceSets.client.output
+
+    from sourceSets.main.resources
+    from sourceSets.client.resources
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    archiveClassifier = "dev"
+}
+
+remapJar {
+    inputFile = jar.archiveFile
+    archiveClassifier = null
+    dependsOn jar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.archives_base_name
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+        }
+    }
+}

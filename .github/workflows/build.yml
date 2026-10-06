@@ -1,0 +1,43 @@
+name: build
+
+on:
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (Fabric 1.18.2)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build
+        run: ./gradlew build --no-daemon --stacktrace
+
+      - name: Capture build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ocelotsignmod-1.18.2
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
+            !build/libs/*-dev.jar
+          if-no-files-found: error
